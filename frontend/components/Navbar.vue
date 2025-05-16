@@ -49,8 +49,7 @@ const groups = computed(() => [{
     background-color: black;
     padding: 20px;
     width: 100%;
-    margin:0 0 0 0;
-    border-top: none;
+    height:100%
 }
 .profile{
     color: azure;
