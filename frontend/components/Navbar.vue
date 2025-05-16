@@ -1,24 +1,49 @@
 <template>
     <div class="navbar">
-      <NuxtLink to="/" class="profile"><UIcon name="mdi-light:account" class="size-10" /></NuxtLink>
-      <UInput icon="i-lucide-search" placeholder="Search..." size="xl"  class="searchinp"/>
-      <NuxtLink to="/profile" class="chat"><UIcon name="material-symbols-light:border-color" class="size-10" /></NuxtLink>
+      <NuxtLink to="/profile" class="profile" as="button"><UIcon name="mdi-light:account" size="40px" /></NuxtLink>
+      <UModal>
+    <UButton
+      label="Search users..."
+      color="neutral"
+      variant="subtle"
+      icon="i-lucide-search"
+    />
+
+    <template #content>
+      <UCommandPalette
+        v-model:search-term="searchTerm"
+        :loading="status === 'pending'"
+        :groups="groups"
+        placeholder="Search users..."
+        class="h-80"
+      />
+    </template>
+  </UModal>
     </div>
 </template>
 
+
 <script setup lang="ts">
-const value=ref('')
+const searchTerm = ref('')
+
+const { data: users, status } = await useFetch('https://jsonplaceholder.typicode.com/users', {
+  key: 'command-palette-users',
+  params: { q: searchTerm },
+  transform: (data: { id: number, name: string, email: string }[]) => {
+    return data?.map(user => ({ id: user.id, label: user.name, suffix: user.email, avatar: { src: `https://i.pravatar.cc/120?img=${user.id}` } })) || []
+  },
+  lazy: true
+})
+
+const groups = computed(() => [{
+  id: 'users',
+  label: searchTerm.value ? `Users matching “${searchTerm.value}”...` : 'Users',
+  items: users.value || [],
+  ignoreFilter: true
+}])
 </script>
 
 <style>
-.searchinp{
-  color: brown;
-}
-.chat{
-    justify-content: flex-end;
-    padding-left: 400px;
-    color: azure
-}
 .navbar{
     display: flex;
     background-color: black;
@@ -29,6 +54,8 @@ const value=ref('')
 }
 .profile{
     color: azure;
+    padding-right: 100px;
+    
 }
 
 </style>
