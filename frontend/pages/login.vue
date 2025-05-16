@@ -12,10 +12,10 @@ const userId = route.query?.userId
 const secret = route.query?.secret
 
 if (secret && userId) {
-    await authStore.createUserSession(userId, secret);
-    if (authStore.user.name) {
+    if (authStore.user?.name) {
         router.push({ path: "/" })
     }
+    await authStore.createUserSession(userId, secret);
     console.info('User session created:', authStore.user);
 } else {
     console.info('No secret or userId provided in the URL');
@@ -32,6 +32,11 @@ const login = async (email) => {
         config.public.appUrl + '/login', // redirect URL
     );
     console.log(token);
+};
+
+const updateNameAndRedirect = async (name) => {
+    await authStore.updateUserName(name);
+    router.push({ path: "/" });
 };
 
 </script>
@@ -56,7 +61,7 @@ const login = async (email) => {
             icon="i-lucide-mail" />
 
         <form v-if="authStore.user !== null && !authStore.user?.name" class="flex flex-col gap-8 align-center-safe mb-8"
-            @submit.prevent @submit="authStore.updateUserName(name)">
+            @submit.prevent @submit="updateNameAndRedirect(name)">
             <UInput v-model="name" required trailing-icon="i-lucide-a-large-small" placeholder="Enter your name"
                 size="xl" />
             <UButton loading-auto type="submit" color="neutral" class="ml-42 w-32 font-bold" size="xl" block>
