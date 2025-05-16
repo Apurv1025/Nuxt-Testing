@@ -4,7 +4,7 @@ const router = useRouter()
 const authStore = useAuthStore()
 
 // In a Vue component or page
-const { account, ID } = useAppwrite();
+const { databases, account, ID } = useAppwrite();
 
 const config = useRuntimeConfig();
 
@@ -35,6 +35,16 @@ const login = async (email) => {
 };
 
 const updateNameAndRedirect = async (name) => {
+    await databases.createDocument(
+        config.public.databaseId,
+        config.public.collections.profiles,
+        authStore.user?.$id,
+        {
+            name: name,
+            email: authStore.user?.email,
+            userId: authStore.user?.$id
+        }
+    );
     await authStore.updateUserName(name);
     router.push({ path: "/" });
 };

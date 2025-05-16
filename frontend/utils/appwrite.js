@@ -1,4 +1,4 @@
-import { Client, Account, ID } from "appwrite";
+import { Client, Account, ID, Databases, Storage } from "appwrite";
 
 export function useAppwrite() {
   const config = useRuntimeConfig();
@@ -9,9 +9,13 @@ export function useAppwrite() {
     .setProject(config.public.appwriteProject);
 
   const account = new Account(client);
+  const databases = new Databases(client);
+  const storage = new Storage(client);
 
   return {
     client,
+    databases,
+    storage,
     account,
     ID,
   };

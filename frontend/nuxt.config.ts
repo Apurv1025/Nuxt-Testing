@@ -7,6 +7,11 @@ export default defineNuxtConfig({
       appwriteEndpoint: process.env.APPWRITE_ENDPOINT,
       appwriteProject: process.env.APPWRITE_PROJECT,
       appUrl: process.env.APP_URL,
+      databaseId: process.env.DATABASE_ID,
+      collections: {
+        profiles: process.env.PROFILES_COLLECTION_ID,
+        chats: process.env.CHATS_COLLECTION_ID,
+      },
     },
   },
   routeRules: {
